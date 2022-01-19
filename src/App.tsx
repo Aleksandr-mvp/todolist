@@ -3,6 +3,8 @@ import './App.css';
 import {v1} from "uuid";
 import {TodoList} from "./components/TodoList/TodoList";
 import {AddItemForm} from "./components/AddItemForm/AddItemForm";
+import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
+import {Menu} from "@material-ui/icons";
 
 export type TaskType = {
     id: string
@@ -28,7 +30,7 @@ function App() {
     const todoListID_1 = v1()
     const todoListID_2 = v1()
 
-    const [todoLists,setTodoLists] = useState<Array<TodoListType>>([
+    const [todoLists, setTodoLists] = useState<Array<TodoListType>>([
         {id: todoListID_1, title: "What to learn", filter: 'all'},
         {id: todoListID_2, title: "What to buy", filter: 'all'},
     ])
@@ -48,7 +50,7 @@ function App() {
 
     const addTask = (title: string, todoListID: string) => {
         const copyTasks = {...tasks}
-        copyTasks[todoListID] = [{id: v1(), title, isDone: false },...tasks[todoListID]]
+        copyTasks[todoListID] = [{id: v1(), title, isDone: false}, ...tasks[todoListID]]
         setTasks(copyTasks)
     }
 
@@ -88,11 +90,11 @@ function App() {
 
     const addTodoList = (title: string) => {
         const newTodoListID = v1()
-        setTodoLists( [...todoLists, {id: newTodoListID, title: title, filter: 'all'}])
+        setTodoLists([...todoLists, {id: newTodoListID, title: title, filter: 'all'}])
         setTasks({...tasks, [newTodoListID]: []})
     }
 
-    const getTasksForRender = (filter: FilterValuesType,tasks: Array<TaskType>): Array<TaskType> => {
+    const getTasksForRender = (filter: FilterValuesType, tasks: Array<TaskType>): Array<TaskType> => {
         switch (filter) {
             case "completed":
                 return tasks.filter(t => !t.isDone)
@@ -105,20 +107,29 @@ function App() {
 
     const todoListsComp = todoLists.map(tl => {
         return (
-            <TodoList
-                key={tl.id}
-                todoListID={tl.id}
-                filter={tl.filter}
-                title={tl.title}
-                tasks={getTasksForRender(tl.filter, tasks[tl.id])}
-                addTask={addTask}
-                removeTask={removeTask}
-                removeTodoList={removeTodoList}
-                changeTodoListFilter={changeTodoListFilter}
-                changeTaskStatus={changeTaskStatus}
-                changeTaskTitle={changeTaskTitle}
-                changeTodoListTitle={changeTodoListTitle}
-            />
+            <Grid item key={tl.id}>
+                <Paper elevation={6}
+                       style={{
+                           padding: '15px',
+                           width: '300px',
+                           height: '400px'
+                       }}
+                >
+                    <TodoList
+                        todoListID={tl.id}
+                        filter={tl.filter}
+                        title={tl.title}
+                        tasks={getTasksForRender(tl.filter, tasks[tl.id])}
+                        addTask={addTask}
+                        removeTask={removeTask}
+                        removeTodoList={removeTodoList}
+                        changeTodoListFilter={changeTodoListFilter}
+                        changeTaskStatus={changeTaskStatus}
+                        changeTaskTitle={changeTaskTitle}
+                        changeTodoListTitle={changeTodoListTitle}
+                    />
+                </Paper>
+            </Grid>
         )
     })
 
@@ -126,8 +137,27 @@ function App() {
     //UI:
     return (
         <div className="App">
-            <AddItemForm addItem={addTodoList}/>
-            {todoListsComp}
+            <AppBar position="static">
+                <Toolbar style={{justifyContent: "space-between"}}>
+                    <IconButton edge="start" color="inherit" aria-label="menu">
+                        <Menu/>
+                    </IconButton>
+                    <Typography variant="h6">
+                        Todolists
+                    </Typography>
+                    <Button color="inherit" variant={"outlined"}>Login</Button>
+                </Toolbar>
+            </AppBar>
+            <Container fixed>
+                <Grid container justifyContent={'center'} style={{padding: '15px'}}>
+                    <Grid item>
+                        <AddItemForm addItem={addTodoList}/>
+                    </Grid>
+                </Grid>
+                <Grid container spacing={5} justifyContent={'center'}>
+                    {todoListsComp}
+                </Grid>
+            </Container>
         </div>
     )
 }
