@@ -1,9 +1,9 @@
-import React, {useState, KeyboardEvent, ChangeEvent, MouseEvent} from 'react';
+import React, {ChangeEvent} from 'react';
 import {FilterValuesType, TaskType} from "../../App";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
-import {Button, ButtonGroup, Checkbox, IconButton, List, ListItem, Typography} from "@material-ui/core";
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import {ListItem, Checkbox, IconButton, Typography, List, ButtonGroup, Button} from "@mui/material";
 
 
 type TodoListPropsType = {
@@ -49,8 +49,8 @@ export const TodoList = (props: TodoListPropsType) => {
                         : <EditableSpan title={t.title} changeTitle={changeTaskTitle}/>
                     }
                 </div>
-                <IconButton onClick={removeTask} color={'primary'}>
-                    <DeleteForeverIcon/>
+                <IconButton onClick={removeTask}>
+                    <HighlightOffIcon/>
                 </IconButton>
             </ListItem>
         )
@@ -79,8 +79,8 @@ export const TodoList = (props: TodoListPropsType) => {
                 style={{fontWeight: 'bold'}}
             >
                 <EditableSpan title={props.title} changeTitle={changeTodoListTitle}/>
-                <IconButton onClick={removeTodoList} size={'small'} color={'primary'}>
-                    <DeleteForeverIcon/>
+                <IconButton onClick={removeTodoList} size={'small'}>
+                    <HighlightOffIcon/>
                 </IconButton>
             </Typography>
             <AddItemForm addItem={addTask}/>
@@ -95,18 +95,18 @@ export const TodoList = (props: TodoListPropsType) => {
                     size={'small'}
                     fullWidth
                 >
-                <Button
-                    color={props.filter === 'all' ? "secondary" : "primary"}
-                    onClick={onClickSetAllFilter}
-                >All</Button>
-                <Button
-                    color={props.filter === 'active' ? "secondary" : "primary"}
-                    onClick={onClickSetActiveFilter}
-                >Active</Button>
-                <Button
-                    color={props.filter === 'completed' ? "secondary" : "primary"}
-                    onClick={onClickSetCompletedFilter}
-                >Completed</Button>
+                    <Button
+                        color={props.filter === 'all' ? "secondary" : "primary"}
+                        onClick={onClickSetAllFilter}
+                    >All</Button>
+                    <Button
+                        color={props.filter === 'active' ? "secondary" : "primary"}
+                        onClick={onClickSetActiveFilter}
+                    >Active</Button>
+                    <Button
+                        color={props.filter === 'completed' ? "secondary" : "primary"}
+                        onClick={onClickSetCompletedFilter}
+                    >Completed</Button>
                 </ButtonGroup>
             </div>
         </div>

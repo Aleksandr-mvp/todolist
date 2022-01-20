@@ -3,8 +3,14 @@ import './App.css';
 import {v1} from "uuid";
 import {TodoList} from "./components/TodoList/TodoList";
 import {AddItemForm} from "./components/AddItemForm/AddItemForm";
-import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
-import {Menu} from "@material-ui/icons";
+import {Menu} from "@mui/icons-material";
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import {
+    Grid, Paper, AppBar, IconButton, Button, Typography, Container, Toolbar,
+    createTheme, useTheme, ThemeProvider, CssBaseline, ButtonGroup
+} from "@mui/material";
+
 
 export type TaskType = {
     id: string
@@ -23,7 +29,16 @@ type TaskStateType = {
     [key: string]: Array<TaskType>
 }
 
+const ColorModeContext = React.createContext({
+    toggleColorMode: () => {
+    }
+});
+
 function App() {
+    //theme:
+    const theme = useTheme();
+    const colorMode = React.useContext(ColorModeContext);
+
 
     //BLL:
 
@@ -138,14 +153,20 @@ function App() {
     return (
         <div className="App">
             <AppBar position="static">
-                <Toolbar style={{justifyContent: "space-between"}}>
-                    <IconButton edge="start" color="inherit" aria-label="menu">
+                <Toolbar sx={{justifyContent: "space-between"}}>
+                    <IconButton edge="start" color="inherit" aria-label="menu" sx={{ml: 1, justifySelf: "flex-start"}}>
                         <Menu/>
                     </IconButton>
                     <Typography variant="h6">
                         Todolists
                     </Typography>
-                    <Button color="inherit" variant={"outlined"}>Login</Button>
+                    <ButtonGroup>
+                        <IconButton onClick={colorMode.toggleColorMode} color="inherit">
+                            {theme.palette.mode === 'dark' ? <Brightness7Icon/> : <Brightness4Icon/>}
+                        </IconButton>
+                        <Button color="inherit" variant={"outlined"}
+                                sx={{ml: 1, justifySelf: "flex-end"}}>Login</Button>
+                    </ButtonGroup>
                 </Toolbar>
             </AppBar>
             <Container fixed>
@@ -162,6 +183,33 @@ function App() {
     )
 }
 
-export default App;
+
+export default function ToggleColorMode() {
+    const [mode, setMode] = React.useState<'light' | 'dark'>('light');
+    const colorMode = React.useMemo(
+        () => ({
+            toggleColorMode: () => {
+                setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+            },
+        }),
+        [],
+    );
+
+    const theme = React.useMemo(() => createTheme({
+            palette: {
+                mode,
+            },
+        }),
+        [mode],
+    )
+    return (
+        <ColorModeContext.Provider value={colorMode}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline/>
+                <App/>
+            </ThemeProvider>
+        </ColorModeContext.Provider>
+    )
+}
 
 
